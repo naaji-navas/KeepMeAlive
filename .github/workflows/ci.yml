@@ -12,6 +12,8 @@ jobs:
         run: swift build -c release
       - name: Bundle app
         run: ./scripts/build-app.sh
+      - name: Build DMG
+        run: KEEPMEALIVE_SKIP_BUILD=1 ./scripts/make-dmg.sh
       - name: Smoke test CLI (read-only)
         run: |
           build/KeepMeAlive.app/Contents/MacOS/KeepMeAlive help

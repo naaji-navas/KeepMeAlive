@@ -37,20 +37,19 @@ KeepMeAlive does it differently:
 
 Requires **macOS 14 (Sonoma) or later**. Apple silicon and Intel are both supported.
 
-### Option A: download a release
+### Option A: download the DMG (easiest)
 
-1. Download the latest `KeepMeAlive-vX.Y.Z.zip` from [Releases](https://github.com/naaji-navas/KeepMeAlive/releases) and unzip it.
-2. In Terminal, run the installer from the unzipped folder:
+1. Download **`KeepMeAlive-vX.Y.Z.dmg`** from the [latest release](https://github.com/naaji-navas/KeepMeAlive/releases/latest).
+2. Open it and drag **KeepMeAlive** into **Applications**.
+3. Open KeepMeAlive from Applications. This open-source build isn't notarized by Apple,
+   so the first time macOS says it can't verify the developer. Click **Done**, open
+   **System Settings → Privacy & Security**, scroll down and click **Open Anyway**.
+   You only do this once.
 
-   ```bash
-   ./install.sh
-   ```
+Prefer Terminal? The release also includes a `.zip` with an `install.sh` that copies
+the app to `~/Applications` and skips the Gatekeeper step.
 
-   The installer copies the app to `~/Applications`. Release builds are signed
-   ad hoc, not notarized, so the installer also clears the download quarantine
-   flag. You can read the script first; it is short.
-
-### Option B: build from source
+### Option B: build from source (for contributors)
 
 All you need is the Xcode **Command Line Tools** (`xcode-select --install`). Full Xcode is optional.
 
@@ -149,6 +148,13 @@ picked up by macOS automatically.
 ./scripts/uninstall.sh --purge  # also settings and logs
 ```
 
+Installed from the DMG? `uninstall.sh` is also in the release `.zip`, or run it
+straight from GitHub:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/naaji-navas/KeepMeAlive/main/scripts/uninstall.sh | sh
+```
+
 If something ever goes wrong, this always restores normal sleep:
 
 ```bash
@@ -161,10 +167,11 @@ sudo pmset -a disablesleep 0
 swift build                 # debug build
 ./scripts/build-app.sh      # build/KeepMeAlive.app (release, ad-hoc signed)
 ./scripts/package-release.sh v0.2.0   # release zip + sha256
+./scripts/make-dmg.sh v0.2.0          # drag-to-install DMG + sha256
 ```
 
-Pushing a `v*` tag runs `.github/workflows/release.yml`, which builds the zip and
-publishes a GitHub release.
+Pushing a `v*` tag runs `.github/workflows/release.yml`, which builds the DMG and the
+zip and publishes a GitHub release.
 
 ```
 Sources/KeepMeAlive/
