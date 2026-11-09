@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "MacAwake",
+    name: "KeepMeAlive",
     platforms: [.macOS(.v14)],
     targets: [
         .executableTarget(
-            name: "MacAwake",
-            path: "Sources/MacAwake",
+            name: "KeepMeAlive",
+            path: "Sources/KeepMeAlive",
             swiftSettings: [.swiftLanguageMode(.v5)],
             linkerSettings: [
                 .linkedFramework("IOKit"),

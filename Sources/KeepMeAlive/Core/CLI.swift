@@ -2,12 +2,12 @@ import Foundation
 
 /// Command-line control of the running menu bar app.
 ///
-///     MacAwake on            # until stopped
-///     MacAwake on 90         # 90 minutes   (also: 2h, 45m)
-///     MacAwake on auto       # while agents run
-///     MacAwake extend 30
-///     MacAwake off
-///     MacAwake status
+///     KeepMeAlive on            # until stopped
+///     KeepMeAlive on 90         # 90 minutes   (also: 2h, 45m)
+///     KeepMeAlive on auto       # while agents run
+///     KeepMeAlive extend 30
+///     KeepMeAlive off
+///     KeepMeAlive status
 enum CLI {
     static func runIfCommand(_ args: [String]) -> Int32? {
         guard let cmd = args.first, ["on", "off", "toggle", "extend", "status", "preview", "help", "--help"].contains(cmd) else {
@@ -20,7 +20,7 @@ enum CLI {
         default: break
         }
         guard appIsRunning() else {
-            FileHandle.standardError.write(Data("MacAwake is not running. Open it first.\n".utf8))
+            FileHandle.standardError.write(Data("KeepMeAlive is not running. Open it first.\n".utf8))
             return 1
         }
         var payload = cmd
@@ -48,7 +48,7 @@ enum CLI {
     }
 
     static func status() -> Int32 {
-        guard appIsRunning(), let s = RuntimeState.load() else { print("MacAwake: not running"); return 1 }
+        guard appIsRunning(), let s = RuntimeState.load() else { print("KeepMeAlive: not running"); return 1 }
         var parts = [s.engaged ? "AWAKE" : "idle"]
         if s.engaged {
             parts.append(s.sleepDisabledByUs ? "lid-proof" : "lid close will sleep")
@@ -58,7 +58,7 @@ enum CLI {
         if !s.network.isEmpty { parts.append("net: \(s.network)") }
         let frozen = s.frozenPids.split(separator: " ").count
         if frozen > 0 { parts.append("\(frozen) processes paused") }
-        print("MacAwake: " + parts.joined(separator: " · "))
+        print("KeepMeAlive: " + parts.joined(separator: " · "))
         return s.engaged ? 0 : 3
     }
 
@@ -77,7 +77,7 @@ enum CLI {
     }
 
     static let usage = """
-    usage: MacAwake <command>
+    usage: KeepMeAlive <command>
       on [minutes|2h|45m|auto]   start a session (auto = while agents run)
       extend [minutes]           add time to a timed session
       off                        end the session

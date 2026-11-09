@@ -42,7 +42,7 @@ private struct GeneralTab: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
             Section("Startup") {
-                Toggle("Open MacAwake at login", isOn: Binding(get: { engine.launchAtLogin }, set: { engine.setLaunchAtLogin($0) }))
+                Toggle("Open KeepMeAlive at login", isOn: Binding(get: { engine.launchAtLogin }, set: { engine.setLaunchAtLogin($0) }))
             }
         }
         .formStyle(.grouped)
@@ -135,7 +135,7 @@ private struct NetworkTab: View {
                 }
                 Toggle("Move back to normal Wi-Fi when it returns", isOn: $engine.config.returnToPrimaryWiFi)
             } footer: {
-                Text("MacAwake checks real internet access every 10 seconds. If Wi-Fi is switched off it turns it back on; if the internet stays down, it joins your phone's Personal Hotspot.")
+                Text("KeepMeAlive checks real internet access every 10 seconds. If Wi-Fi is switched off it turns it back on; if the internet stays down, it joins your phone's Personal Hotspot.")
             }
 
             Section {
@@ -167,7 +167,7 @@ private struct NetworkTab: View {
             } header: {
                 Text("Mobile data (Personal Hotspot)")
             } footer: {
-                Text("On your iPhone turn on Settings → Personal Hotspot → Allow Others to Join. The password stays in your login Keychain. macOS needs Location access to show Wi-Fi names; MacAwake never reads your location. A phone plugged in by USB is used automatically by macOS.")
+                Text("On your iPhone turn on Settings → Personal Hotspot → Allow Others to Join. The password stays in your login Keychain. macOS needs Location access to show Wi-Fi names; KeepMeAlive never reads your location. A phone plugged in by USB is used automatically by macOS.")
             }
 
             if !engine.networkAction.isEmpty {
@@ -187,14 +187,14 @@ private struct AdvancedTab: View {
 
     var body: some View {
         Form {
-            Section("System changes MacAwake can make") {
+            Section("System changes KeepMeAlive can make") {
                 LabeledContent("Sleep rule", value: FileManager.default.fileExists(atPath: SleepControl.sudoersPath) ? SleepControl.sudoersPath : "Not installed")
                 LabeledContent("Crash watchdog", value: Watchdog.isInstalled ? "Running every minute" : "Not installed")
-                Text("The sudoers rule allows exactly two commands: pmset -a disablesleep 1 and 0. If MacAwake crashes, the watchdog re-enables sleep and resumes paused apps within a minute.")
+                Text("The sudoers rule allows exactly two commands: pmset -a disablesleep 1 and 0. If KeepMeAlive crashes, the watchdog re-enables sleep and resumes paused apps within a minute.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Section("Command line") {
-                Text(verbatim: "\(Bundle.main.executablePath ?? "MacAwake") on 2h | on auto | off | status")
+                Text(verbatim: "\(Bundle.main.executablePath ?? "KeepMeAlive") on 2h | on auto | off | status")
                     .font(.caption.monospaced()).textSelection(.enabled)
             }
             Section("Logs") {

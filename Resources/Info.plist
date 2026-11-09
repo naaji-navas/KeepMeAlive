@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>MacAwake</string>
+	<string>KeepMeAlive</string>
 	<key>CFBundleExecutable</key>
-	<string>MacAwake</string>
+	<string>KeepMeAlive</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.macawake.app</string>
+	<string>com.keepmealive.app</string>
 	<key>CFBundleName</key>
-	<string>MacAwake</string>
+	<string>KeepMeAlive</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -23,12 +23,12 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSAppleEventsUsageDescription</key>
-	<string>MacAwake uses the standard admin prompt once to install its sleep rule.</string>
+	<string>KeepMeAlive uses the standard admin prompt once to install its sleep rule.</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSLocationUsageDescription</key>
-	<string>macOS only shows Wi-Fi network names to apps with Location access. MacAwake uses it to find your phone's hotspot. It never reads your location.</string>
+	<string>macOS only shows Wi-Fi network names to apps with Location access. KeepMeAlive uses it to find your phone's hotspot. It never reads your location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>macOS only shows Wi-Fi network names to apps with Location access. MacAwake uses it to find your phone's hotspot. It never reads your location.</string>
+	<string>macOS only shows Wi-Fi network names to apps with Location access. KeepMeAlive uses it to find your phone's hotspot. It never reads your location.</string>
 </dict>
 </plist>

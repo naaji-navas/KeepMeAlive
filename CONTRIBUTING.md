@@ -1,4 +1,4 @@
-# Contributing to MacAwake
+# Contributing to KeepMeAlive
 
 Thanks for helping. Contributions of any size are welcome.
 
@@ -8,7 +8,7 @@ You need macOS 14 or later and the Xcode Command Line Tools. Full Xcode is optio
 
 ```bash
 swift build
-./scripts/build-app.sh && open build/MacAwake.app
+./scripts/build-app.sh && open build/KeepMeAlive.app
 ```
 
 > The Command Line Tools don't include SwiftUI's macro plugin, so use
@@ -17,7 +17,7 @@ swift build
 
 ## Ground rules
 
-- **Always undo what you change.** Anything MacAwake changes on the system (sleep,
+- **Always undo what you change.** Anything KeepMeAlive changes on the system (sleep,
   paused processes, mute, App Nap defaults) must be recorded in `RuntimeState`
   *before* it is applied, and undone by `AwakeEngine.shutdown()`, by
   `recoverFromPreviousRun()` and, where a shell can do it, by `Resources/watchdog.sh`.
@@ -30,9 +30,9 @@ swift build
 
 ## Testing a change
 
-1. Run `MacAwake preview` to check which apps would be paused.
+1. Run `KeepMeAlive preview` to check which apps would be paused.
 2. Start a short session, close the lid for a few minutes, then open it and check
-   `~/Library/Logs/MacAwake/macawake.log`.
+   `~/Library/Logs/KeepMeAlive/keepmealive.log`.
 3. Afterwards, `pmset -g | grep SleepDisabled` should print nothing.
 4. To test crash recovery: start a session, run `kill -9` on the app, and wait up to a
    minute. The watchdog should turn sleep back on.

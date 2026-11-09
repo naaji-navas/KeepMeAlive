@@ -6,7 +6,7 @@ import Security
 
 /// Hotspot password storage in the login Keychain.
 enum HotspotKeychain {
-    static let service = "com.macawake.hotspot"
+    static let service = "com.keepmealive.hotspot"
 
     static func save(ssid: String, password: String) -> Bool {
         delete(ssid: ssid)
@@ -15,7 +15,7 @@ enum HotspotKeychain {
             kSecAttrService as String: service,
             kSecAttrAccount as String: ssid,
             kSecValueData as String: Data(password.utf8),
-            kSecAttrLabel as String: "MacAwake hotspot (\(ssid))",
+            kSecAttrLabel as String: "KeepMeAlive hotspot (\(ssid))",
         ]
         return SecItemAdd(q as CFDictionary, nil) == errSecSuccess
     }
@@ -42,7 +42,7 @@ enum HotspotKeychain {
 }
 
 /// macOS hides Wi-Fi network names from apps without Location Services access.
-/// MacAwake never reads your location; it only needs the permission to see SSIDs.
+/// KeepMeAlive never reads your location; it only needs the permission to see SSIDs.
 final class LocationGate: NSObject, CLLocationManagerDelegate {
     static let shared = LocationGate()
     private let manager = CLLocationManager()
@@ -208,7 +208,7 @@ final class NetworkGuardian {
                 case .success:
                     self.onHotspot = true
                     self.act("Joined \(ssid)")
-                    self.notifyOnce("Switched to mobile data", "Wi-Fi dropped, so MacAwake joined \(ssid).")
+                    self.notifyOnce("Switched to mobile data", "Wi-Fi dropped, so KeepMeAlive joined \(ssid).")
                 case .failure(let e):
                     self.act("Hotspot join failed: \(e.message)")
                 }
@@ -255,7 +255,7 @@ final class NetworkGuardian {
                   let best = nets.max(by: { $0.rssiValue < $1.rssiValue }), best.rssiValue > -75 else { return }
             // Known networks: CoreWLAN uses the saved system credentials when password is nil.
             let moved = (try? iface.associate(to: best, password: nil)) != nil
-            Thread.sleep(forTimeInterval: 8)
+            try? await Task.sleep(for: .seconds(8))
             let ok = await self.probe()
             if !ok || !moved {
                 _ = Self.associate(interfaceName: ifName, ssid: hotspot, password: hotspotPassword)
@@ -286,7 +286,7 @@ final class NetworkGuardian {
     private nonisolated func fetch(_ url: String, expect: String) async -> Bool {
         guard let u = URL(string: url) else { return false }
         var req = URLRequest(url: u)
-        req.setValue("MacAwake/1.0", forHTTPHeaderField: "User-Agent")
+        req.setValue("KeepMeAlive/1.0", forHTTPHeaderField: "User-Agent")
         guard let (data, resp) = try? await session.data(for: req),
               (resp as? HTTPURLResponse)?.statusCode == 200 else { return false }
         return String(decoding: data, as: UTF8.self).contains(expect)

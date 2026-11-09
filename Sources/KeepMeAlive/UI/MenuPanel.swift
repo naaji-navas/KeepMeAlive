@@ -54,7 +54,7 @@ struct MenuPanel: View {
             .frame(width: 40, height: 40)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("MacAwake").font(.headline)
+                Text("KeepMeAlive").font(.headline)
                 Text(headline).font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
             }
             Spacer()
@@ -79,7 +79,7 @@ struct MenuPanel: View {
             Label("Closing the lid will still sleep the Mac", systemImage: "exclamationmark.triangle.fill")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.orange)
-            Text("One-time setup lets MacAwake switch lid sleep off during a session (asks for your password once).")
+            Text("One-time setup lets KeepMeAlive switch lid sleep off during a session (asks for your password once).")
                 .font(.caption).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             Button("Enable lid-proof mode…") { engine.setupLidProof() }

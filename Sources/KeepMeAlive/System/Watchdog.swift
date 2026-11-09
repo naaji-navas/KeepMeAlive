@@ -1,8 +1,8 @@
 import Foundation
 
-/// Installs a per-user LaunchAgent that undoes MacAwake's system changes if the app dies.
+/// Installs a per-user LaunchAgent that undoes KeepMeAlive's system changes if the app dies.
 enum Watchdog {
-    static let label = "com.macawake.watchdog"
+    static let label = "com.keepmealive.watchdog"
     static var plistURL: URL {
         FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/LaunchAgents/\(label).plist")
     }

@@ -101,7 +101,7 @@ struct Config: Codable, Equatable {
     ]
 }
 
-/// Crash-safe record of what MacAwake changed on the system. Read by the watchdog
+/// Crash-safe record of what KeepMeAlive changed on the system. Read by the watchdog
 /// (`watchdog.sh`) with `plutil`, so keep the field names flat and simple.
 struct RuntimeState: Codable {
     var appPid: Int32

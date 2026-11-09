@@ -1,10 +1,10 @@
 #!/bin/sh
-# MacAwake watchdog — runs every minute via launchd.
-# If MacAwake has crashed or was force-quit while it had sleep disabled or apps
+# KeepMeAlive watchdog — runs every minute via launchd.
+# If KeepMeAlive has crashed or was force-quit while it had sleep disabled or apps
 # paused, this script undoes those changes so the Mac never stays sleepless by accident.
 
-STATE="$HOME/Library/Application Support/MacAwake/state.json"
-LOG="$HOME/Library/Logs/MacAwake/watchdog.log"
+STATE="$HOME/Library/Application Support/KeepMeAlive/state.json"
+LOG="$HOME/Library/Logs/KeepMeAlive/watchdog.log"
 
 [ -f "$STATE" ] || exit 0
 
@@ -12,7 +12,7 @@ get() { /usr/bin/plutil -extract "$1" raw -o - "$STATE" 2>/dev/null; }
 
 PID=$(get appPid)
 if [ -n "$PID" ] && [ "$PID" != "0" ] && /bin/kill -0 "$PID" 2>/dev/null; then
-  if /bin/ps -p "$PID" -o comm= 2>/dev/null | /usr/bin/grep -q "MacAwake"; then
+  if /bin/ps -p "$PID" -o comm= 2>/dev/null | /usr/bin/grep -q "KeepMeAlive"; then
     exit 0  # app alive, it is in charge
   fi
 fi
@@ -26,7 +26,7 @@ if [ "$SLEEP" != "true" ] && [ "$SLEEP" != "1" ] && [ -z "$FROZEN" ] && [ "$MUTE
 fi
 
 ts() { /bin/date "+%Y-%m-%dT%H:%M:%S%z"; }
-echo "$(ts) MacAwake (pid $PID) is gone; restoring the system" >> "$LOG"
+echo "$(ts) KeepMeAlive (pid $PID) is gone; restoring the system" >> "$LOG"
 
 for p in $FROZEN; do /bin/kill -CONT "$p" 2>/dev/null; done
 [ -n "$FROZEN" ] && echo "$(ts) resumed pids: $FROZEN" >> "$LOG"

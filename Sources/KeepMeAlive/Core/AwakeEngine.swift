@@ -8,7 +8,7 @@ import UserNotifications
 @MainActor
 @Observable
 final class AwakeEngine {
-    static let commandNotification = Notification.Name("com.macawake.command")
+    nonisolated static let commandNotification = Notification.Name("com.keepmealive.command")
 
     // Settings
     var config: Config { didSet { if config != oldValue { configChanged(from: oldValue) } } }
@@ -74,7 +74,7 @@ final class AwakeEngine {
         }
         installSignalHandlers()
         persist()
-        Log.info("MacAwake started (lid-proof ready: \(lidProofReady))")
+        Log.info("KeepMeAlive started (lid-proof ready: \(lidProofReady))")
     }
 
     // MARK: Session control
@@ -189,7 +189,7 @@ final class AwakeEngine {
         s.sleepDisabledByUs = sleepDisabledByUs // keep for the watchdog if the undo failed
         s.appPid = sleepDisabledByUs ? 0 : getpid()
         if sleepDisabledByUs { s.save() } else { try? FileManager.default.removeItem(at: Paths.state) }
-        Log.info("MacAwake quit")
+        Log.info("KeepMeAlive quit")
     }
 
     // MARK: Lid

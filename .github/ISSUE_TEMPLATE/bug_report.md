@@ -11,14 +11,14 @@ labels: bug
 **Setup**
 - Mac model / chip:
 - macOS version:
-- MacAwake version (Settings → Advanced, or `Info.plist`):
+- KeepMeAlive version (Settings → Advanced, or `Info.plist`):
 - Lid-proof mode enabled? (yes/no)
 - On battery or AC?
 
 **Output of**
 ```
-~/Applications/MacAwake.app/Contents/MacOS/MacAwake status
+~/Applications/KeepMeAlive.app/Contents/MacOS/KeepMeAlive status
 pmset -g | grep -i sleep
 ```
 
-**Log excerpt** — `~/Library/Logs/MacAwake/macawake.log` (check it for Wi-Fi names before posting)
+**Log excerpt** — `~/Library/Logs/KeepMeAlive/keepmealive.log` (check it for Wi-Fi names before posting)

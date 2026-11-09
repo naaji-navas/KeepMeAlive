@@ -1,10 +1,10 @@
 import Foundation
 import os
 
-/// Filesystem locations used by MacAwake. Everything is per-user and owner-only.
+/// Filesystem locations used by KeepMeAlive. Everything is per-user and owner-only.
 enum Paths {
-    static let appName = "MacAwake"
-    static let bundleID = "com.macawake.app"
+    static let appName = "KeepMeAlive"
+    static let bundleID = "com.keepmealive.app"
 
     static var support: URL {
         let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
@@ -23,7 +23,7 @@ enum Paths {
     static var config: URL { support.appendingPathComponent("config.json") }
     static var state: URL { support.appendingPathComponent("state.json") }
     static var watchdogScript: URL { support.appendingPathComponent("watchdog.sh") }
-    static var logFile: URL { logs.appendingPathComponent("macawake.log") }
+    static var logFile: URL { logs.appendingPathComponent("keepmealive.log") }
 
     private static func ensureDir(_ url: URL) {
         if !FileManager.default.fileExists(atPath: url.path) {
@@ -33,10 +33,10 @@ enum Paths {
     }
 }
 
-/// Tiny logger: unified log + a capped file in ~/Library/Logs/MacAwake.
+/// Tiny logger: unified log + a capped file in ~/Library/Logs/KeepMeAlive.
 enum Log {
     private static let logger = Logger(subsystem: Paths.bundleID, category: "core")
-    private static let queue = DispatchQueue(label: "macawake.log")
+    private static let queue = DispatchQueue(label: "keepmealive.log")
     private static let maxBytes = 1_000_000
 
     static func info(_ msg: String) { write("INFO", msg); logger.info("\(msg, privacy: .private)") }

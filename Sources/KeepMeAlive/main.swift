@@ -1,12 +1,12 @@
 import AppKit
 import SwiftUI
 
-// `MacAwake on|off|status|...` drives the running app from a terminal or an agent.
+// `KeepMeAlive on|off|status|...` drives the running app from a terminal or an agent.
 if let code = CLI.runIfCommand(Array(CommandLine.arguments.dropFirst())) {
     exit(code)
 }
 
-MacAwakeApp.main()
+KeepMeAliveApp.main()
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     var engine: AwakeEngine?
@@ -17,7 +17,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-struct MacAwakeApp: App {
+struct KeepMeAliveApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @ViewState private var engine = AwakeEngine()
 
@@ -32,7 +32,7 @@ struct MacAwakeApp: App {
         }
         .menuBarExtraStyle(.window)
 
-        Window("MacAwake Settings", id: "settings") {
+        Window("KeepMeAlive Settings", id: "settings") {
             SettingsView()
                 .environment(engine)
                 .frame(minWidth: 560, minHeight: 520)

@@ -7,13 +7,13 @@ import IOKit.pwr_mgt
 ///
 /// macOS ignores ordinary power assertions when a MacBook's lid closes on battery
 /// (clamshell sleep). The only supported switch that survives a lid close is
-/// `pmset -a disablesleep 1`, which needs root. MacAwake gets that through a
+/// `pmset -a disablesleep 1`, which needs root. KeepMeAlive gets that through a
 /// narrow sudoers rule allowing exactly two commands, installed once by the user.
 ///
 /// An IOKit assertion is also held, so idle sleep is blocked even before setup.
 enum SleepControl {
     static let pmset = "/usr/bin/pmset"
-    static let sudoersPath = "/etc/sudoers.d/macawake"
+    static let sudoersPath = "/etc/sudoers.d/keepmealive"
 
     // MARK: Privileged (lid-proof)
 
@@ -53,18 +53,18 @@ enum SleepControl {
             return (false, "Unsupported user name")
         }
         let rule = """
-        # Installed by MacAwake. Lets \(user) toggle lid-proof sleep prevention without a password.
+        # Installed by KeepMeAlive. Lets \(user) toggle lid-proof sleep prevention without a password.
         \(user) ALL=(root) NOPASSWD: /usr/bin/pmset -a disablesleep 1, /usr/bin/pmset -a disablesleep 0
 
         """
-        let tmp = FileManager.default.temporaryDirectory.appendingPathComponent("macawake-sudoers-\(UUID().uuidString)")
+        let tmp = FileManager.default.temporaryDirectory.appendingPathComponent("keepmealive-sudoers-\(UUID().uuidString)")
         do { try rule.write(to: tmp, atomically: true, encoding: .utf8) } catch {
             return (false, "Could not write temp file: \(error.localizedDescription)")
         }
         defer { try? FileManager.default.removeItem(at: tmp) }
         let t = tmp.path.replacingOccurrences(of: "'", with: "")
         let cmd = "/usr/sbin/visudo -cf '\(t)' && /usr/bin/install -m 0440 -o root -g wheel '\(t)' \(sudoersPath)"
-        let script = "do shell script \"\(cmd)\" with administrator privileges with prompt \"MacAwake needs your password once so it can keep your Mac awake with the lid closed.\""
+        let script = "do shell script \"\(cmd)\" with administrator privileges with prompt \"KeepMeAlive needs your password once so it can keep your Mac awake with the lid closed.\""
         var err: NSDictionary?
         NSAppleScript(source: script)?.executeAndReturnError(&err)
         if let err {
@@ -85,7 +85,7 @@ enum SleepControl {
             var id: IOPMAssertionID = 0
             let r = IOPMAssertionCreateWithName(kIOPMAssertionTypePreventUserIdleSystemSleep as CFString,
                                                 IOPMAssertionLevel(kIOPMAssertionLevelOn),
-                                                "MacAwake keeps agent sessions alive" as CFString, &id)
+                                                "KeepMeAlive keeps agent sessions alive" as CFString, &id)
             if r == kIOReturnSuccess { assertionID = id }
         } else if !hold, assertionID != 0 {
             IOPMAssertionRelease(assertionID)

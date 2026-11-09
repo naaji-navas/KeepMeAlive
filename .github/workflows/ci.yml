@@ -14,8 +14,8 @@ jobs:
         run: ./scripts/build-app.sh
       - name: Smoke test CLI (read-only)
         run: |
-          build/MacAwake.app/Contents/MacOS/MacAwake help
-          build/MacAwake.app/Contents/MacOS/MacAwake preview
+          build/KeepMeAlive.app/Contents/MacOS/KeepMeAlive help
+          build/KeepMeAlive.app/Contents/MacOS/KeepMeAlive preview
       - name: Lint shell scripts
         run: |
           for f in scripts/*.sh Resources/watchdog.sh; do sh -n "$f"; done

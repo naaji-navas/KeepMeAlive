@@ -6,4 +6,4 @@ labels: enhancement
 
 **What problem would this solve?**
 
-**What would you like MacAwake to do?**
+**What would you like KeepMeAlive to do?**
