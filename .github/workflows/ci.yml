@@ -1,0 +1,22 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: swift build -c release
+      - name: Bundle app
+        run: ./scripts/build-app.sh
+      - name: Smoke test CLI (read-only)
+        run: |
+          build/MacAwake.app/Contents/MacOS/MacAwake help
+          build/MacAwake.app/Contents/MacOS/MacAwake preview
+      - name: Lint shell scripts
+        run: |
+          for f in scripts/*.sh Resources/watchdog.sh; do sh -n "$f"; done
+          plutil -lint Resources/Info.plist
