@@ -17,6 +17,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Re-pushing an existing tag (e.g. after a history rewrite) must not fail or
+          # replace the DMG people already downloaded and checksummed.
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            echo "Release ${GITHUB_REF_NAME} already exists; leaving its assets as they are."
+            exit 0
+          fi
           gh release create "${GITHUB_REF_NAME}" \
             "build/KeepMeAlive-${GITHUB_REF_NAME}.dmg" \
             "build/KeepMeAlive-${GITHUB_REF_NAME}.dmg.sha256" \
