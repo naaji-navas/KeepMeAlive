@@ -1,4 +1,6 @@
-# KeepMeAlive
+<p align="center"><img src="docs/icon.png" width="160" alt="KeepMeAlive icon: a closed laptop with a glowing heartbeat line under a crescent moon"></p>
+
+<h1 align="center">KeepMeAlive</h1>
 
 **Close your MacBook lid. Your AI agents keep working.**
 
@@ -67,7 +69,7 @@ cd KeepMeAlive
    installed: Claude, Codex, ChatGPT, Cursor, Windsurf, VS Code, Zed, Terminal,
    iTerm2, Ghostty and Warp. Click **+** to add more apps.
 4. Optional: in **Settings → Internet**, enter your phone's hotspot name and password.
-5. Pick a duration (∞, 1h, 2h, 4h, 8h or **Auto**). The icon turns into a ☀️. Close the lid.
+5. Pick a duration (∞, 1h, 2h, 4h, 8h or **Auto**). The icon turns into a heartbeat. Close the lid.
 
 To see what a lid close would pause right now, without changing anything:
 

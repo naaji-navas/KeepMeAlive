@@ -10,7 +10,6 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/KeepMeAlive"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/watchdog.sh "$APP/Contents/Resources/watchdog.sh"
-[ -f Resources/AppIcon.icns ] && cp Resources/AppIcon.icns "$APP/Contents/Resources/" && \
-  /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$APP/Contents/Info.plist" 2>/dev/null || true
+cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 codesign --force --deep --sign - "$APP"
 echo "Built $APP"

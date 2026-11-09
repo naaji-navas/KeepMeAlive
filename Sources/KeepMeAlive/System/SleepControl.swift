@@ -26,7 +26,8 @@ enum SleepControl {
     static func isSleepDisabled() -> Bool {
         let r = Shell.run(pmset, ["-g"], timeout: 5)
         for line in r.out.split(separator: "\n") where line.contains("SleepDisabled") {
-            return line.split(separator: " ").last.map { $0.trimmingCharacters(in: .whitespaces) == "1" } ?? false
+            // pmset separates key and value with tabs, so split on any whitespace.
+            return line.split(whereSeparator: { $0.isWhitespace }).last == "1"
         }
         return false
     }
@@ -38,11 +39,12 @@ enum SleepControl {
             Log.error("pmset disablesleep \(disabled ? 1 : 0) failed (\(r.status)): \(r.err)")
             return false
         }
-        // Read back: another tool could be fighting us.
+        // The command succeeded, so we own this change and must undo it later, whatever
+        // the read-back says. A mismatch only means another tool may be fighting us.
         let readBack = isSleepDisabled()
         if readBack != disabled { Log.warn("pmset read-back mismatch: wanted \(disabled), got \(readBack)") }
         Log.info("pmset disablesleep \(disabled ? 1 : 0)")
-        return readBack == disabled
+        return true
     }
 
     /// Installs the sudoers rule through the standard macOS admin prompt.

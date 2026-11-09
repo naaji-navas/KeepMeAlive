@@ -15,7 +15,7 @@ struct MenuBarLabel: View {
     private var icon: String {
         if !engine.engaged { return engine.active ? "moon.haze" : "moon.zzz" }
         if !engine.networkOnline { return "wifi.exclamationmark" }
-        return engine.lidClosed ? "laptopcomputer" : "sun.max.fill"
+        return engine.lidClosed ? "laptopcomputer" : "waveform.path.ecg"
     }
 }
 
@@ -46,8 +46,8 @@ struct MenuPanel: View {
     private var header: some View {
         HStack(alignment: .center, spacing: 12) {
             ZStack {
-                Circle().fill(engine.engaged ? Color.orange.gradient : Color.secondary.opacity(0.18).gradient)
-                Image(systemName: engine.engaged ? "sun.max.fill" : "moon.zzz.fill")
+                Circle().fill(engine.engaged ? Color(red: 0.18, green: 0.85, blue: 0.62).gradient : Color.secondary.opacity(0.18).gradient)
+                Image(systemName: engine.engaged ? "waveform.path.ecg" : "moon.zzz.fill")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundStyle(engine.engaged ? .white : .secondary)
             }
