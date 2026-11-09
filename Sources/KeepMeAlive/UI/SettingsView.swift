@@ -2,15 +2,117 @@ import AppKit
 import CoreLocation
 import SwiftUI
 
+/// System Settings–style layout: a sidebar of panes on the left, the pane on the right.
 struct SettingsView: View {
+    @Environment(SettingsNavigation.self) private var nav
+
     var body: some View {
-        TabView {
-            GeneralTab().tabItem { Label("General", systemImage: "gearshape") }
-            AppsTab().tabItem { Label("Apps", systemImage: "square.grid.2x2") }
-            NetworkTab().tabItem { Label("Internet", systemImage: "wifi") }
-            AdvancedTab().tabItem { Label("Advanced", systemImage: "wrench.and.screwdriver") }
+        @Bindable var nav = nav
+        HStack(spacing: 0) {
+            sidebar
+            Divider()
+            VStack(spacing: 0) {
+                Text(nav.pane.title)
+                    .font(.title2.weight(.semibold))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 28)
+                    .padding(.top, 22)
+                    .padding(.bottom, 2)
+                detail
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(nsColor: .windowBackgroundColor))
         }
-        .padding(20)
+        .frame(minWidth: 680, maxWidth: .infinity, minHeight: 460, maxHeight: .infinity)
+        .ignoresSafeArea()
+    }
+
+    private var sidebar: some View {
+        @Bindable var nav = nav
+        return VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 10) {
+                Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 34, height: 34)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("KeepMeAlive").font(.headline)
+                    Text("Version \(SettingsView.version)").font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 44)   // clear the traffic-light buttons
+            .padding(.bottom, 14)
+
+            List(selection: Binding(get: { nav.pane }, set: { if let p = $0 { nav.pane = p } })) {
+                ForEach(SettingsPane.allCases) { pane in
+                    Label {
+                        Text(pane.title)
+                    } icon: {
+                        Image(systemName: pane.symbol)
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 22, height: 22)
+                            .background(RoundedRectangle(cornerRadius: 6, style: .continuous).fill(pane.tint.gradient))
+                    }
+                    .padding(.vertical, 2)
+                    .tag(pane)
+                }
+            }
+            .listStyle(.sidebar)
+            .scrollContentBackground(.hidden)
+        }
+        .frame(width: 210)
+        .frame(maxHeight: .infinity)
+        .background(VisualEffect().ignoresSafeArea())
+    }
+
+    @ViewBuilder private var detail: some View {
+        switch nav.pane {
+        case .general: GeneralTab()
+        case .apps: AppsTab()
+        case .internet: NetworkTab()
+        case .advanced: AdvancedTab()
+        case .about: AboutPane()
+        }
+    }
+
+    static var version: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev"
+    }
+}
+
+/// Translucent sidebar material, like System Settings.
+private struct VisualEffect: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let v = NSVisualEffectView()
+        v.material = .sidebar
+        v.blendingMode = .behindWindow
+        v.state = .followsWindowActiveState
+        return v
+    }
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
+}
+
+private struct AboutPane: View {
+    var body: some View {
+        VStack(spacing: 14) {
+            Spacer()
+            Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 112, height: 112)
+            Text("KeepMeAlive").font(.title.weight(.semibold))
+            Text("Version \(SettingsView.version)").foregroundStyle(.secondary)
+            Text("Close the lid. Your agents keep working.")
+                .font(.callout).foregroundStyle(.secondary)
+            HStack(spacing: 12) {
+                Link("GitHub", destination: URL(string: "https://github.com/naaji-navas/KeepMeAlive")!)
+                Text("·").foregroundStyle(.tertiary)
+                Link("Report an issue", destination: URL(string: "https://github.com/naaji-navas/KeepMeAlive/issues")!)
+                Text("·").foregroundStyle(.tertiary)
+                Link("Releases", destination: URL(string: "https://github.com/naaji-navas/KeepMeAlive/releases")!)
+            }
+            .font(.callout)
+            Spacer()
+            Text("Open source under the MIT License.").font(.caption).foregroundStyle(.tertiary)
+                .padding(.bottom, 18)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
@@ -25,7 +127,7 @@ private struct GeneralTab: View {
                     if engine.lidProofReady {
                         Label("Enabled", systemImage: "checkmark.seal.fill").foregroundStyle(.green)
                     } else {
-                        Button("Enable…") { engine.setupLidProof() }
+                        Button("Set Up…") { SetupWindowController.shared.show(engine: engine) }
                     }
                 }
                 Toggle("Pause all other apps while the lid is closed", isOn: $engine.config.freezeOthersOnLidClose)

@@ -22,7 +22,6 @@ struct MenuBarLabel: View {
 /// The popover that opens from the menu bar.
 struct MenuPanel: View {
     @Environment(AwakeEngine.self) private var engine
-    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -82,7 +81,7 @@ struct MenuPanel: View {
             Text("One-time setup lets KeepMeAlive switch lid sleep off during a session (asks for your password once).")
                 .font(.caption).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
-            Button("Enable lid-proof mode…") { engine.setupLidProof() }
+            Button("Set up lid-proof mode…") { SetupWindowController.shared.show(engine: engine) }
                 .buttonStyle(.borderedProminent).tint(.orange).controlSize(.small)
         }
         .padding(10)
@@ -215,9 +214,9 @@ struct MenuPanel: View {
     private var footer: some View {
         HStack {
             Button {
-                NSApp.activate(ignoringOtherApps: true)
-                openWindow(id: "settings")
+                SettingsWindowController.shared.show(engine: engine)
             } label: { Label("Settings…", systemImage: "gearshape") }
+                .keyboardShortcut(",")
             Spacer()
             Button("Quit") { NSApp.terminate(nil) }
                 .keyboardShortcut("q")

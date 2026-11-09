@@ -31,12 +31,7 @@ struct KeepMeAliveApp: App {
                 .onAppear { delegate.engine = engine }
         }
         .menuBarExtraStyle(.window)
-
-        Window("KeepMeAlive Settings", id: "settings") {
-            SettingsView()
-                .environment(engine)
-                .frame(minWidth: 560, minHeight: 520)
-        }
-        .windowResizability(.contentSize)
+        // Settings lives in an AppKit-managed window (SettingsWindowController) so it
+        // behaves like a normal window instead of vanishing behind other apps.
     }
 }

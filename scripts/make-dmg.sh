@@ -19,7 +19,8 @@ KeepMeAlive: close your MacBook lid and your AI agents keep working.
 2. Open it. The first time, macOS may say it can't verify the developer
    (this open-source build isn't notarized by Apple). If so, go to
    System Settings > Privacy & Security, scroll down and click "Open Anyway".
-3. Click the moon in the menu bar, then "Enable lid-proof mode…".
+3. A setup window opens: click "Set Up Lid-Proof Mode" and enter your
+   password once. Then click the moon in the menu bar to start a session.
 
 Docs and source: https://github.com/naaji-navas/KeepMeAlive
 EOF

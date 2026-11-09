@@ -10,7 +10,7 @@ import Foundation
 ///     KeepMeAlive status
 enum CLI {
     static func runIfCommand(_ args: [String]) -> Int32? {
-        guard let cmd = args.first, ["on", "off", "toggle", "extend", "status", "preview", "help", "--help"].contains(cmd) else {
+        guard let cmd = args.first, ["on", "off", "toggle", "extend", "status", "preview", "settings", "setup", "help", "--help"].contains(cmd) else {
             return nil
         }
         switch cmd {
@@ -22,6 +22,11 @@ enum CLI {
         guard appIsRunning() else {
             FileHandle.standardError.write(Data("KeepMeAlive is not running. Open it first.\n".utf8))
             return 1
+        }
+        if cmd == "settings" || cmd == "setup" {
+            DistributedNotificationCenter.default().postNotificationName(
+                AwakeEngine.commandNotification, object: cmd, userInfo: nil, deliverImmediately: true)
+            return 0
         }
         var payload = cmd
         if args.count > 1 {
@@ -84,5 +89,7 @@ enum CLI {
       toggle                     start or end
       status                     print one status line (exit 0 when awake)
       preview                    list the apps a lid close would pause (changes nothing)
+      settings                   open the Settings window
+      setup                      open lid-proof setup
     """
 }

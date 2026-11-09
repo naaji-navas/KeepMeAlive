@@ -35,6 +35,7 @@ final class AwakeEngine {
     private(set) var lastEvent = ""
     private(set) var now = Date()
     private(set) var launchAtLogin = false
+    private(set) var lastSetupError: String?
 
     private let freezer = AppFreezer()
     private let network = NetworkGuardian()
@@ -58,10 +59,9 @@ final class AwakeEngine {
         network.onUpdate = { [weak self] in self?.syncNetwork() }
         network.notify = { [weak self] t, b in self?.notify(t, b) }
 
-        if Bundle.main.bundleIdentifier != nil {
-            Watchdog.install()
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
-        }
+        // The crash watchdog is part of lid-proof mode: it only exists once the user
+        // has set that up (and is refreshed on launch so app updates ship a new script).
+        if Bundle.main.bundleIdentifier != nil, lidProofReady { Watchdog.install() }
 
         timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
@@ -75,6 +75,14 @@ final class AwakeEngine {
         installSignalHandlers()
         persist()
         Log.info("KeepMeAlive started (lid-proof ready: \(lidProofReady))")
+
+        // First launch: lid-proof mode is the whole point, so walk the user through it.
+        if !lidProofReady, !config.onboardingShown, Bundle.main.bundleIdentifier != nil {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
+                guard let self else { return }
+                SetupWindowController.shared.show(engine: self)
+            }
+        }
     }
 
     // MARK: Session control
@@ -196,9 +204,11 @@ final class AwakeEngine {
 
     private func applyLidClosed() {
         event("Lid closed — keeping \(keepSummary) alive")
-        if config.freezeOthersOnLidClose { freezeSweep() }
+        // Pausing apps and muting need the watchdog, which undoes them if we crash.
+        let safe = Watchdog.isInstalled
+        if config.freezeOthersOnLidClose, safe { freezeSweep() }
         if config.sleepDisplayOnLidClose { SleepControl.sleepDisplaysNow() }
-        if config.muteOnLidClose, !AudioMute.isMuted() { AudioMute.set(true); mutedByUs = true }
+        if config.muteOnLidClose, safe, !AudioMute.isMuted() { AudioMute.set(true); mutedByUs = true }
         persist()
     }
 
@@ -239,7 +249,7 @@ final class AwakeEngine {
         if tickCount % 3 == 0 { refreshAgents(); if active { evaluate() } }
 
         if engaged && lidClosed {
-            if config.freezeOthersOnLidClose && tickCount % 5 == 0 { freezeSweep(); persist() }
+            if config.freezeOthersOnLidClose && Watchdog.isInstalled && tickCount % 5 == 0 { freezeSweep(); persist() }
             if config.sleepDisplayOnLidClose && tickCount % 15 == 0 && SleepControl.anyDisplayAwake() {
                 SleepControl.sleepDisplaysNow()
             }
@@ -315,14 +325,24 @@ final class AwakeEngine {
         config.keepAliveApps.removeAll { $0.bundleID == bundleID }
     }
 
-    func setupLidProof() {
+    /// Lid-proof setup: one admin prompt for the sleep rule, then the crash watchdog
+    /// and notification permission. Returns false if the user cancelled or it failed.
+    @discardableResult
+    func setupLidProof() -> Bool {
         let r = SleepControl.installLidProofRule()
         lidProofReady = r.ok
         event(r.ok ? "Lid-proof mode enabled" : "Setup not completed: \(r.message)")
+        lastSetupError = r.ok ? nil : r.message
+        if r.ok {
+            config.onboardingShown = true
+            Watchdog.install()
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
+        }
         if r.ok, engaged, !sleepDisabledByUs, !SleepControl.isSleepDisabled(), SleepControl.setSleepDisabled(true) {
             sleepDisabledByUs = true
             persist()
         }
+        return r.ok
     }
 
     func setLaunchAtLogin(_ on: Bool) {
@@ -391,6 +411,8 @@ final class AwakeEngine {
         case "off": stop(reason: "command line")
         case "toggle": toggle()
         case "extend": extend(minutes: parts.count > 1 ? Int(parts[1]) ?? 30 : 30)
+        case "settings": SettingsWindowController.shared.show(engine: self)
+        case "setup": SetupWindowController.shared.show(engine: self)
         default: break
         }
     }

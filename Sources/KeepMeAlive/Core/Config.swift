@@ -47,6 +47,7 @@ struct Config: Codable, Equatable {
     var lastDurationMinutes = 0 // 0 = indefinite
 
     var seededDefaults = false
+    var onboardingShown = false
 
     init() {}
 
@@ -69,6 +70,7 @@ struct Config: Codable, Equatable {
         returnToPrimaryWiFi = (try? c.decodeIfPresent(Bool.self, forKey: .returnToPrimaryWiFi)) ?? d.returnToPrimaryWiFi
         lastDurationMinutes = (try? c.decodeIfPresent(Int.self, forKey: .lastDurationMinutes)) ?? d.lastDurationMinutes
         seededDefaults = (try? c.decodeIfPresent(Bool.self, forKey: .seededDefaults)) ?? d.seededDefaults
+        onboardingShown = (try? c.decodeIfPresent(Bool.self, forKey: .onboardingShown)) ?? d.onboardingShown
     }
 
     static func load() -> Config {

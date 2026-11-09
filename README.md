@@ -63,8 +63,11 @@ cd KeepMeAlive
 
 ### First run
 
-1. Click the 🌙 in the menu bar.
-2. Click **Enable lid-proof mode…** and enter your password once (see [How it works](#how-it-works)).
+1. A setup window opens and explains what lid-proof mode installs. Click
+   **Set Up Lid-Proof Mode** and enter your password once (see [How it works](#how-it-works)).
+   It also installs the crash watchdog and asks to allow notifications.
+   Chose **Not Now**? Click the 🌙 in the menu bar, then **Set up lid-proof mode…** any time.
+2. Click the 🌙 in the menu bar.
 3. Check the **Keep alive** list. On first launch KeepMeAlive adds any of these it finds
    installed: Claude, Codex, ChatGPT, Cursor, Windsurf, VS Code, Zed, Terminal,
    iTerm2, Ghostty and Warp. Click **+** to add more apps.
@@ -126,7 +129,7 @@ picked up by macOS automatically.
 | Screen off | `pmset displaysleepnow`, repeated if the display wakes while the lid is closed. |
 | App Nap | Optionally sets `NSAppSleepDisabled` for keep-alive apps only, and removes it when you take an app off the list. |
 | Network | `NWPathMonitor` and HTTP probes (Apple captive portal check and Cloudflare trace), with CoreWLAN to scan for and join the hotspot. |
-| Crash safety | `~/Library/Application Support/KeepMeAlive/state.json` records every change. A LaunchAgent (`com.keepmealive.watchdog`) runs every minute. If the app is gone, it resumes paused processes and turns sleep back on. The app does the same cleanup at its next launch. |
+| Crash safety | `~/Library/Application Support/KeepMeAlive/state.json` records every change. A LaunchAgent (`com.keepmealive.watchdog`), installed during lid-proof setup, runs every minute. Apps are only paused once it is in place. If the app is gone, it resumes paused processes and turns sleep back on. The app does the same cleanup at its next launch. |
 
 ### What KeepMeAlive changes on your Mac
 
