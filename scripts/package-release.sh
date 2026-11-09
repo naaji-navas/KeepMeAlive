@@ -4,8 +4,7 @@
 set -eu
 cd "$(dirname "$0")/.."
 VERSION="${1:-$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' Resources/Info.plist)}"
-/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${VERSION#v}" Resources/Info.plist
-./scripts/build-app.sh
+KEEPMEALIVE_VERSION="$VERSION" ./scripts/build-app.sh
 STAGE="build/KeepMeAlive-$VERSION"
 rm -rf "$STAGE" "$STAGE.zip"
 mkdir -p "$STAGE"

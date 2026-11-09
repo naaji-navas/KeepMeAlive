@@ -33,7 +33,7 @@ swift build
 1. Run `KeepMeAlive preview` to check which apps would be paused.
 2. Start a short session, close the lid for a few minutes, then open it and check
    `~/Library/Logs/KeepMeAlive/keepmealive.log`.
-3. Afterwards, `pmset -g | grep SleepDisabled` should print nothing.
+3. Afterwards, `pmset -g | grep SleepDisabled` should print `0` or nothing.
 4. To test crash recovery: start a session, run `kill -9` on the app, and wait up to a
    minute. The watchdog should turn sleep back on.
 
